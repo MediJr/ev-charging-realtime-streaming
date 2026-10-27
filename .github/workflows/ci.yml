@@ -1,0 +1,54 @@
+# Intégration continue : style, tests Python, tests Spark (dans l'image Spark), Terraform, et configuration Docker.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    name: Règles d'anomalie et simulateur
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: |
+          pip install -r requirements-app.txt
+          pip install --no-deps -e .
+      - name: Style du code (ruff)
+        run: ruff check src spark tests
+      - name: Tests (les tests Spark sont ignorés ici, ils tournent dans le job suivant)
+        run: pytest
+
+  spark:
+    name: Transformations Spark (image Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire l'image Spark
+        run: docker build -f docker/spark.Dockerfile -t lumio-spark:ci .
+      - name: Tests Spark de bout en bout (sans Kafka)
+        run: docker run --rm lumio-spark:ci python3 -m pytest -q tests
+
+  infrastructure:
+    name: Terraform et Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.16.7
+      - name: terraform fmt
+        run: terraform -chdir=terraform fmt -check -recursive
+      - name: terraform validate
+        run: |
+          terraform -chdir=terraform init -backend=false -input=false
+          terraform -chdir=terraform validate
+      - name: docker compose config
+        run: |
+          cp .env.example .env
+          docker compose config -q

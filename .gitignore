@@ -1,0 +1,42 @@
+# --- Secrets : ne JAMAIS les publier ---
+.env
+*.env
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- Spark (exécutions locales hors Docker) ---
+spark-warehouse/
+metastore_db/
+derby.log
+checkpoints/
+
+# --- Terraform : état et fournisseurs téléchargés (l'état contiendrait des secrets) ---
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+terraform/.terraform.lock.hcl.bak
+
+# --- Compilation LaTeX (les PDF finaux sont copiés dans docs/livraison/) ---
+docs/rapport/build/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+
+# --- Éditeurs et systèmes ---
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

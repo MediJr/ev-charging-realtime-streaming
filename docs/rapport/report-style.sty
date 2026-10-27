@@ -1,0 +1,151 @@
+% =============================================================================
+%  report-style.sty : mise en page commune aux rapports FR et EN (projets 1 et 2)
+%  Moteur : XeLaTeX (polices système via fontspec)
+% =============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{report-style}[2026/10/22 Rapport d'ingenierie des donnees]
+
+% --- Polices -----------------------------------------------------------------
+\RequirePackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Latin Modern Mono}[Scale=0.95]
+\addtokomafont{disposition}{\sffamily}
+\addtokomafont{section}{\color{primary}}
+\addtokomafont{subsection}{\color{primary}}
+\addtokomafont{subsubsection}{\color{ink2}}
+
+% --- Couleurs ----------------------------------------------------------------
+\RequirePackage[table]{xcolor}
+\definecolor{primary}{HTML}{1B2A41}   % titres
+\definecolor{accent}{HTML}{0F766E}    % liens, filets
+\definecolor{ubisoft}{HTML}{2A78D6}   % série 1 des graphiques
+\definecolor{ea}{HTML}{EB6834}        % série 2 des graphiques
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{rule}{HTML}{D9D7D0}
+\definecolor{panel}{HTML}{F4F3EF}
+\definecolor{good}{HTML}{1B7F3B}
+\definecolor{warn}{HTML}{B45309}
+\definecolor{termbg}{HTML}{1E1E1E}
+
+% --- Paquets -----------------------------------------------------------------
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{longtable}
+\RequirePackage{array}
+\RequirePackage{multirow}
+\RequirePackage{enumitem}
+\RequirePackage{siunitx}
+\RequirePackage{caption}
+\RequirePackage{float}
+\RequirePackage{listings}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,backgrounds,calc}
+\RequirePackage{eso-pic}
+\RequirePackage{scrlayer-scrpage}
+\RequirePackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=primary, urlcolor=accent, citecolor=accent}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\urlstyle{same}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\setlist{itemsep=0.2em, topsep=0.4em}
+\captionsetup{font={small,sf}, labelfont={bf,color=primary}, skip=6pt}
+\renewcommand{\arraystretch}{1.25}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+% --- En-têtes et pieds de page -------------------------------------------------
+\pagestyle{scrheadings}
+\clearpairofpagestyles
+\ihead{\small\sffamily\color{ink2}\ReportShortTitle}
+\ohead{\small\sffamily\color{ink2}\ReportAuthor}
+\ofoot{\small\sffamily\color{ink2}\pagemark}
+\ifoot{\small\sffamily\color{ink2}\ReportFooter}
+\setkomafont{pageheadfoot}{\normalfont}
+\KOMAoptions{headsepline=0.4pt}
+\addtokomafont{headsepline}{\color{rule}}
+
+% --- Code --------------------------------------------------------------------
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\footnotesize, backgroundcolor=\color{panel},
+  frame=single, rulecolor=\color{rule}, framesep=6pt, xleftmargin=6pt, xrightmargin=6pt,
+  keywordstyle=\color{primary}\bfseries, commentstyle=\color{ink2}\itshape,
+  stringstyle=\color{accent}, showstringspaces=false, breaklines=true,
+  columns=fullflexible, keepspaces=true, upquote=true, aboveskip=0.8em, belowskip=0.8em}
+\lstdefinelanguage{DuckSQL}[]{SQL}{morekeywords={FILTER, INTERVAL, QUALIFY, REPLACE, TRANSACTION, MEDIAN, CORR, date_trunc}}
+\lstset{style=code}
+
+% Fenêtre de terminal (« capture » de l'exécution réelle)
+\lstdefinestyle{terminal}{
+  basicstyle=\ttfamily\scriptsize\color{white}, backgroundcolor=\color{termbg},
+  frame=none, framesep=8pt, xleftmargin=8pt, xrightmargin=8pt,
+  breaklines=true, columns=fullflexible, keepspaces=true, showstringspaces=false}
+\newtcolorbox{terminal}[1]{enhanced, colback=termbg, colframe=termbg, arc=4pt,
+  left=2pt, right=2pt, top=16pt, bottom=4pt, boxrule=0pt,
+  overlay={
+    \fill[white!20!termbg] ([yshift=-14pt]frame.north west) rectangle (frame.north east);
+    \foreach \c/\x in {FF5F56/10, FFBD2E/22, 27C93F/34}{\definecolor{dot}{HTML}{\c}\fill[dot] ([xshift=\x pt, yshift=-7pt]frame.north west) circle (3.2pt);}
+    \node[font=\scriptsize\sffamily, text=white!70!black] at ([yshift=-7pt]frame.north) {#1};}}
+
+% --- Encadrés ----------------------------------------------------------------
+\newtcolorbox{keybox}[1][]{enhanced, breakable, colback=panel, colframe=accent,
+  boxrule=0pt, leftrule=3pt, arc=0pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\sffamily\bfseries\color{accent}, coltitle=accent, colbacktitle=panel,
+  title={#1}, attach title to upper={\par\smallskip}}
+\newtcolorbox{warnbox}[1][]{enhanced, breakable, colback=warn!6, colframe=warn,
+  boxrule=0pt, leftrule=3pt, arc=0pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fonttitle=\sffamily\bfseries, coltitle=warn, title={#1}, attach title to upper={\par\smallskip}}
+
+% Tuile d'indicateur : valeur + libellé
+\newcommand{\kpi}[2]{%
+  \begin{tcolorbox}[enhanced, colback=white, colframe=rule, boxrule=0.6pt, arc=3pt,
+    width=\linewidth, halign=center, valign=center, height=2.25cm, left=2pt, right=2pt]
+    {\sffamily\bfseries\fontsize{19}{21}\selectfont\color{primary}#1}\par\smallskip
+    {\sffamily\footnotesize\color{ink2}#2}
+  \end{tcolorbox}}
+\newcommand{\kpirow}[8]{%
+  \noindent\begin{minipage}[t]{0.235\linewidth}\kpi{#1}{#2}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\kpi{#3}{#4}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\kpi{#5}{#6}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\kpi{#7}{#8}\end{minipage}\par\medskip}
+
+\RequirePackage{pifont}
+\newcommand{\ok}{\textcolor{good}{\ding{51}}}
+\newcommand{\pill}[2]{\tcbox[on line, colback=#1!12, colframe=#1!12, boxrule=0pt, arc=6pt,
+  left=4pt, right=4pt, top=1pt, bottom=1pt]{\sffamily\scriptsize\bfseries\textcolor{#1}{#2}}}
+
+% --- Page de titre -------------------------------------------------------------
+% Les métadonnées sont définies dans chaque document : \ReportKicker, \ReportTitle,
+% \ReportSubtitle, \ReportAuthor, \ReportDate, \ReportMeta, \ReportScenario.
+\newcommand{\MakeTitlePage}{%
+  \begin{titlepage}
+    \AddToShipoutPictureBG*{%
+      \begin{tikzpicture}[remember picture, overlay]
+        \fill[primary] (current page.north west) rectangle ([yshift=-11.2cm]current page.north east);
+        \fill[accent] ([yshift=-11.2cm]current page.north west) rectangle ([yshift=-11.5cm]current page.north east);
+        \fill[ubisoft] ([xshift=-5.2cm, yshift=-11.5cm]current page.north east) rectangle ([xshift=-2.6cm, yshift=-11.8cm]current page.north east);
+        \fill[ea] ([xshift=-2.6cm, yshift=-11.5cm]current page.north east) rectangle ([yshift=-11.8cm]current page.north east);
+      \end{tikzpicture}}
+    \vspace*{1.2cm}
+    {\color{white}\sffamily
+      {\small\bfseries\MakeUppercase{\ReportKicker}}\par\vspace{1.2cm}
+      {\fontsize{34}{40}\selectfont\bfseries\ReportTitle}\par\vspace{0.8cm}
+      {\Large\ReportSubtitle}\par}
+    \vspace{3.3cm}
+    {\sffamily
+      {\large\bfseries\color{primary}\ReportAuthor}\par\vspace{0.15cm}
+      {\color{ink2}\ReportAuthorRole}\par\vspace{0.9cm}
+      \ReportMeta\par}
+    \vfill
+    {\sffamily\footnotesize\color{ink2}\ReportScenario\par}
+  \end{titlepage}}
+
+\endinput
+
+% Tolérance d'espacement : évite les débordements causés par les noms techniques longs et insécables
+\setlength{\emergencystretch}{3em}
+\endinput

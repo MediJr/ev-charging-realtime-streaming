@@ -1,0 +1,5 @@
+# Traitement (image apache/spark, Python 3.10). PySpark est fourni par l'image. Versions figées.
+pandas==2.2.3
+pyarrow==18.1.0
+psycopg[binary]==3.2.12
+pytest==8.4.2

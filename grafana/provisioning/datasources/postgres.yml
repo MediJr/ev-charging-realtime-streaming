@@ -1,0 +1,16 @@
+# Source de données provisionnée en code : Grafana démarre déjà branché sur la base de diffusion.
+apiVersion: 1
+datasources:
+  - name: Lumio
+    uid: lumio-pg
+    type: grafana-postgresql-datasource
+    url: postgres:5432
+    user: ${PG_USER}
+    secureJsonData:
+      password: ${PG_PASSWORD}
+    jsonData:
+      database: ${PG_DB}
+      sslmode: disable
+      postgresVersion: 1700
+      timescaledb: false
+    isDefault: true

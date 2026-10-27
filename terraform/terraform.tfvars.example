@@ -1,0 +1,7 @@
+# Copier en terraform.tfvars (non versionné), puis : terraform init && terraform plan
+project_id         = "lumio-recharge-dev"
+region             = "europe-west9"
+environment        = "dev"
+raw_retention_days = 90
+billing_account_id = ""   # ex. 012345-6789AB-CDEF01, pour activer l'alerte de budget
+monthly_budget_eur = 50

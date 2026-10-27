@@ -1,0 +1,30 @@
+[project]
+name = "lumio-stream"
+version = "1.0.0"
+description = "Supervision temps réel de bornes de recharge : Redpanda, Spark Structured Streaming, Iceberg, Grafana, Terraform GCP"
+# 3.10 : l'interpréteur de l'image Spark officielle ; 3.13 : l'image des producteurs.
+requires-python = ">=3.10"
+authors = [{ name = "Lumu Bamana Manasse" }]
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "spark"]
+
+[tool.ruff]
+line-length = 145
+target-version = "py310"
+
+[tool.ruff.lint]
+# Erreurs (E, F), imports triés (I), syntaxe moderne (UP), pièges courants (B).
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["lumio_stream", "streaming_job"]

@@ -132,6 +132,9 @@ terraform -chdir=terraform validate
 - Single-node Spark: the stateful monitor tops out at ~1,440 msg/s on this laptop; beyond, a cluster (Dataproc) and more partitions.
 - Processing-time timeouts misbehave during catch-up: silences are then reported **late** (by the event-time safety net), not missed.
 - The GCP infrastructure is validated, not deployed (no `plan` without credentials).
+- **Found in the 14-hour [endurance report](docs/livraison/2026-10-28-rapport-endurance.md):** after a platform-wide interruption
+  (host sleep), the silence safety net flags every charger at once (1,458 false alerts in 9 bursts). Data integrity held (1.6 M messages,
+  0 lost, 0 duplicated); fleet-wide incident detection is specified for v1.1.
 
 ## 📚 Engagement documents
 
@@ -141,7 +144,7 @@ terraform -chdir=terraform validate
 | 2. Scoping | [Meeting minutes](docs/mission/2026-10-26-02-compte-rendu-cadrage.md) |
 | 3. Commitment | [Statement of work](docs/mission/2026-10-26-03-cahier-des-charges.md) |
 | 4. Delivery | [Work log](docs/journal/2026-10-26.md) · [ADRs](docs/decisions/) · [Data dictionary](docs/dictionnaire-de-donnees.md) |
-| 5. Acceptance | [Reports (PDF)](docs/livraison/) · [Acceptance sign-off](docs/livraison/2026-10-27-pv-recette.md) |
+| 5. Acceptance | [Reports (PDF)](docs/livraison/) · [Acceptance sign-off](docs/livraison/2026-10-27-pv-recette.md) · [14-hour endurance report](docs/livraison/2026-10-28-rapport-endurance.md) |
 
 *Engagement documents are written in French, as for a French client.*
 

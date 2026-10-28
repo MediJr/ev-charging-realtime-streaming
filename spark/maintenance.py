@@ -14,6 +14,7 @@ Iceberg gère la concurrence de façon optimiste : la maintenance peut tourner p
 from __future__ import annotations
 
 import sys
+from datetime import datetime, timedelta, timezone
 
 from streaming_job import CATALOG, build_spark
 
@@ -33,7 +34,10 @@ def main() -> None:
     for table in TABLES:
         before = files(spark, table)
         spark.sql(f"CALL {CATALOG}.system.rewrite_data_files(table => '{table}', options => map('min-input-files', '5'))")
-        spark.sql(f"CALL {CATALOG}.system.expire_snapshots(table => '{table}', older_than => current_timestamp() - INTERVAL 1 DAYS, "
+        # Une procédure Iceberg n'accepte que des valeurs fixes : la date limite est calculée ici, pas en SQL
+        # (« current_timestamp() - INTERVAL 1 DAYS » échoue : number of args and params must match after binding).
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+        spark.sql(f"CALL {CATALOG}.system.expire_snapshots(table => '{table}', older_than => TIMESTAMP '{cutoff}', "
                   f"retain_last => 10)")
         after = files(spark, table)
         print(f"{table:<24} fichiers : {before[0]:>6} → {after[0]:>6}   taille moyenne : {before[1]:>8.1f} Ko → {after[1]:>8.1f} Ko")

@@ -3,6 +3,19 @@
 Toutes les évolutions notables du projet sont consignées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Le projet suit le [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [1.0.1] - 2026-10-28
+
+### Ajouté
+- Rapport d'endurance de 14 heures (`docs/livraison/2026-10-28-rapport-endurance.md`) : rapprochement exact sur 1,6 million de messages,
+  84 / 84 anomalies détectées en régime stable (p95 12,5 s), compaction du lakehouse (silver : 584 → 3 fichiers)
+
+### Corrigé
+- `spark/maintenance.py` : la procédure Iceberg `expire_snapshots` refuse une expression comme date limite ; date calculée en Python
+
+### Problème connu
+- Après une coupure de toute la plateforme, le filet de sécurité du silence déclare toutes les bornes muettes en même temps
+  (1 458 fausses alertes en 9 rafales). Correction spécifiée pour la version 1.1 : un seul incident de plateforme au-delà de 20 % du parc
+
 ## [1.0.0] - 2026-10-27
 
 Première version livrée au client.

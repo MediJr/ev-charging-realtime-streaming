@@ -99,7 +99,11 @@ Ouvrir Grafana sur http://127.0.0.1:3001 : bornes, alertes et CO₂ apparaissent
 | 2. Cadrage | [Compte rendu](docs/mission/2026-10-26-02-compte-rendu-cadrage.md) |
 | 3. Engagement | [Cahier des charges](docs/mission/2026-10-26-03-cahier-des-charges.md) |
 | 4. Réalisation | [Journal de bord](docs/journal/2026-10-26.md) · [ADR](docs/decisions/) · [Dictionnaire de données](docs/dictionnaire-de-donnees.md) |
-| 5. Recette | [Rapports (PDF)](docs/livraison/) · [PV de recette](docs/livraison/2026-10-27-pv-recette.md) |
+| 5. Recette | [Rapports (PDF)](docs/livraison/) · [PV de recette](docs/livraison/2026-10-27-pv-recette.md) · [Rapport d'endurance de 14 h](docs/livraison/2026-10-28-rapport-endurance.md) |
+
+> ⚠️ **Découvert pendant l'endurance de 14 h** : après une coupure de toute la plateforme (veille de l'ordinateur), le filet de sécurité du
+> silence déclare toutes les bornes muettes en même temps (1 458 fausses alertes en 9 rafales). L'intégrité des données a tenu
+> (1,6 million de messages, 0 perdu, 0 doublé) ; la détection d'un incident global est spécifiée pour la version 1.1.
 
 ---
 
